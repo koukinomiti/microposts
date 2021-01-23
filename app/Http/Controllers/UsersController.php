@@ -86,4 +86,52 @@ class UsersController extends Controller
         ]);
     }
     
+    /**
+     * ユーザのお気に入り一覧ページを表示するアクション。
+     *
+     * @param  $id  ユーザのid
+     * @return \Illuminate\Http\Response
+     */
+    public function favorite($id)
+    {
+        // idの値でユーザを検索して取得
+        $user = User::findOrFail($id);
+
+        // 関係するモデルの件数をロード
+        $user->loadRelationshipCounts();
+
+        // ユーザのお気に入り一覧を取得
+        $favorite = $user->favorite()->paginate(10);
+
+        // お気に入り一覧ビューでそれらを表示
+        return view('users.favorite', [
+            'user' => $user,
+            'microposts' => $favorite,
+        ]);
+    }
+    
+    /**
+     * ユーザの気に入られ一覧ページを表示するアクション。
+     *
+     * @param  $id  ユーザのid
+     * @return \Illuminate\Http\Response
+     */
+    public function liked($id)
+    {
+        // idの値でユーザを検索して取得
+        $user = User::findOrFail($id);
+
+        // 関係するモデルの件数をロード
+        $user->loadRelationshipCounts();
+
+        // ユーザの気に入られ一覧を取得
+        $liked = $user->liked()->paginate(10);
+
+        // 気に入られ一覧ビューでそれらを表示
+        return view('users.liked', [
+            'user' => $user,
+            'microposts' => $liked,
+        ]);
+    }
+    
 }
